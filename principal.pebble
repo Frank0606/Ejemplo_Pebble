@@ -5,19 +5,23 @@
 <body>
 
     <div id="content">
-		{% block content %}{% endblock %}
+
+		{% block content %}
+
+            <h1> Home </h1>
+            <p> Welcome to my home page. My name is {{ id }} </p>
+
+        {% endblock %}
+
 	</div>
+
 	<div id="footer">
+
 		{% block footer %}
 			Copyright 2018
 		{% endblock %}
 
-        <button type="button" id="Probar">Probar</button>
-
 	</div>
-
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="principal_js.js"></script>
 
 </body>
 </html>

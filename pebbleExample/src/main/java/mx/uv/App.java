@@ -6,14 +6,18 @@ import spark.ModelAndView;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import com.google.gson.*;
 
 import static spark.Spark.*;
 
 public class App 
 {
+
+    private static Gson gson = new Gson();
+    private static Map<String, Usuario> usuarios = new HashMap<>();
+
     public static void main( String[] args )
     {
 
@@ -34,26 +38,54 @@ public class App
 
         before((req, res) -> res.header("Access-Control-Allow-Origin", "*"));
 
+        get("/pagina", (req, res) -> {
+            res.redirect("estatica.html");
+            return null;
+        });
+
+        post("/usuario", (req, res) -> {
+
+            String payload = req.body();
+
+            String id = UUID.randomUUID().toString();
+
+            Usuario u = gson.fromJson(payload, Usuario.class);
+
+            u.setId(id);
+
+            usuarios.put(id, u);
+
+            JsonObject objetoJson = new JsonObject();
+            objetoJson.addProperty("status", "ok");
+            objetoJson.addProperty("id", id);
+
+            return objetoJson;
+        });
+
+        get("/estatica", (req, res) -> {
+
+            Map<String, Object> model = new HashMap<>();
+
+            return new PebbleTemplateEngine().render(new ModelAndView(model, "estatica.html"));
+        });
+
+        get("/usuarios", (req, res) -> {
+
+            Map<String, Object> model = new HashMap<>();
+
+            model.put("id", usuarios.get("id"));
+
+            return new ModelAndView(model, "principal.pebble");
+		}, new PebbleTemplateEngine());
+
         get("/prueba", (req, res) -> {
 
             Map<String, Object> model = new HashMap<>();
 
             model.put("nombre", "Frank");
-
-            return new ModelAndView(model, "secundaria.pebble");
-        }, new PebbleTemplateEngine());
-
-
-    /*PebbleEngine engine = new PebbleEngine.Builder().build();
-    PebbleTemplate compiledTemplate = engine.getTemplate("principal.html");
-
-    Map<String, Object> context = new HashMap<>();
-    context.put("name", "Mitchell");
-
-    Writer writer = new StringWriter();
-    compiledTemplate.evaluate(writer, context);
-
-    String output = writer.toString();*/
+            
+            return new PebbleTemplateEngine().render(new ModelAndView(model, "estatica.html"));
+        });
 
     }
 }
