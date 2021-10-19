@@ -1,0 +1,23 @@
+<html>
+<head>
+    <title>{% block title %} Ejemplo {% endblock %}</title>
+</head>
+<body>
+
+    <div id="content">
+		{% block content %}{% endblock %}
+	</div>
+	<div id="footer">
+		{% block footer %}
+			Copyright 2018
+		{% endblock %}
+
+        <button type="button" id="Probar">Probar</button>
+
+	</div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="principal_js.js"></script>
+
+</body>
+</html>
